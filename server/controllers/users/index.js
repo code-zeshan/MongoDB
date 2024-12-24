@@ -1,6 +1,6 @@
 import express from "express"
 import userModel from "../../models/Users/Users.js"
-import c from "config";
+import bcrypt from "bcrypt"
 
 const router = express.Router();
 
@@ -38,6 +38,13 @@ router.get("/getone/:id",async (req,res)=>{
 router.post("/register",async(req,res)=>{
     try {
         let userData = req.body;
+
+        let {firstName, lastName, age, email, password}= req.body;
+
+        let hashPassword = await bcrypt.hash(password,10)
+
+        userData.password = hashPassword;
+
         console.log(userData);
         await userModel.create(userData) 
         res.status(201).json({msg: "User Added Successfully!"})
